@@ -23,18 +23,23 @@ aws_access_key = st.secrets.get("AWS_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_I
 aws_secret_key = st.secrets.get("AWS_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
 
 # Set up AWS session with credentials from secrets
-boto3.setup_default_session(
+s3_client = boto3.client(
+    's3',
     region_name=aws_region,
     aws_access_key_id=aws_access_key,
     aws_secret_access_key=aws_secret_key
 )
 
-s3_client = boto3.client('s3')
-step_functions_client = boto3.client('stepfunctions')
+step_functions_client = boto3.client(
+    'stepfunctions',
+    region_name=aws_region,
+    aws_access_key_id=aws_access_key,
+    aws_secret_access_key=aws_secret_key
+)
 
-# Bucket and Step Function information from secrets or environment variables
-S3_BUCKET = st.secrets.get("S3_BUCKET", os.getenv("S3_BUCKET"))
-STEP_FUNCTION_ARN = st.secrets.get("STEP_FUNCTION_ARN", os.getenv("STEP_FUNCTION_ARN"))
+# Retrieve additional configurations
+S3_BUCKET = st.secrets.get("S3_BUCKET")
+STEP_FUNCTION_ARN = st.secrets.get("STEP_FUNCTION_ARN")
 
 # Repurpose sidebar for app information and status
 st.sidebar.header("Application Info")
