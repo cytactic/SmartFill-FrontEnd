@@ -67,6 +67,14 @@ if aws_access_key:
 else:
     st.sidebar.markdown("**AWS Access Key**: Not configured")
 
+# Add model information section to sidebar
+st.sidebar.header("Model Information")
+# Display model ID from environment variables or use default value
+model_id = st.secrets.get("MODEL_ID", os.getenv("MODEL_ID", "amazon.nova-micro-v1:0"))
+st.sidebar.markdown(f"**LLM Model**: {model_id}")
+st.sidebar.markdown(f"**Embedding Model**: Titan Embeddings")
+st.sidebar.markdown(f"**Vector Database**: FAISS")
+
 # Add session ID placeholder in sidebar - this will stay persistent
 session_id_placeholder = st.sidebar.empty()
 
@@ -451,4 +459,3 @@ if st.session_state.execution_arn:
             # Start checking if auto-check is enabled
             if st.session_state.auto_check:
                 st.rerun()
-
