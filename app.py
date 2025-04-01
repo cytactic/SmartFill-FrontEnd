@@ -18,9 +18,9 @@ The documents will be analyzed using vector search and question-answering techni
 """)
 
 # Configure AWS clients - prioritize Streamlit secrets over environment variables
-aws_region = st.secrets.get("AWS_REGION", os.getenv("AWS_REGION", "us-east-1"))
-aws_access_key = st.secrets.get("AWS_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_ID"))
-aws_secret_key = st.secrets.get("AWS_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
+aws_region = st.secrets.AWS_REGION
+aws_access_key = st.secrets.default.AWS_ACCESS_KEY_ID
+aws_secret_key = st.secrets.default.AWS_SECRET_ACCESS_KEY
 
 # Set up AWS session with credentials from secrets
 boto3.setup_default_session(
