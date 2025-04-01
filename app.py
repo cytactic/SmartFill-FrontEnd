@@ -21,21 +21,19 @@ The documents will be analyzed using vector search and question-answering techni
 aws_region = st.secrets.get("AWS_REGION", os.getenv("AWS_REGION", "us-east-1"))
 aws_access_key = st.secrets.get("AWS_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_ID"))
 aws_secret_key = st.secrets.get("AWS_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
+aws_session_token = st.secrets.get("AWS_SESSION_TOKEN", os.getenv("AWS_SESSION_TOKEN"))
 
-# Set up AWS session with credentials from secrets
-s3_client = boto3.client(
-    's3',
-    region_name=aws_region,
+# Initialize AWS session with credentials from secrets
+session = boto3.Session(
     aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_key
+    aws_secret_access_key=aws_secret_key,
+    aws_session_token=aws_session_token,  # Include session token if using temporary credentials
+    region_name=aws_region
 )
 
-step_functions_client = boto3.client(
-    'stepfunctions',
-    region_name=aws_region,
-    aws_access_key_id=aws_access_key,
-    aws_secret_access_key=aws_secret_key
-)
+# Create AWS service clients using the session
+s3_client = session.client('s3')
+step_functions_client = session.client('stepfunctions')
 
 # Retrieve additional configurations
 S3_BUCKET = st.secrets.get("S3_BUCKET")
