@@ -18,9 +18,9 @@ The documents will be analyzed using vector search and question-answering techni
 """)
 
 # Configure AWS clients - prioritize Streamlit secrets over environment variables
-aws_region = st.secrets.AWS_REGION
-aws_access_key = st.secrets.default.aws_access_key_id
-aws_secret_key = st.secrets.default.aws_secret_access_key
+aws_region = st.secrets.get("AWS_REGION", os.getenv("AWS_REGION", "us-east-1"))
+aws_access_key = st.secrets.get("AWS_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_ID"))
+aws_secret_key = st.secrets.get("AWS_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
 
 # Set up AWS session with credentials from secrets
 boto3.setup_default_session(
@@ -52,6 +52,17 @@ Processing is performed using:
 - Large language models
 - AWS serverless infrastructure
 """)
+
+# Display AWS configuration information in sidebar
+st.sidebar.header("AWS Configuration")
+# Display AWS region
+st.sidebar.markdown(f"**AWS Region**: {aws_region}")
+# Display masked AWS access key (first 4 and last 4 characters)
+if aws_access_key:
+    masked_key = aws_access_key[:4] + "*" * (len(aws_access_key) - 8) + aws_access_key[-4:] if len(aws_access_key) > 8 else "****"
+    st.sidebar.markdown(f"**AWS Access Key**: {masked_key}")
+else:
+    st.sidebar.markdown("**AWS Access Key**: Not configured")
 
 # Add session ID placeholder in sidebar - this will stay persistent
 session_id_placeholder = st.sidebar.empty()
