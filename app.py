@@ -19,8 +19,8 @@ The documents will be analyzed using vector search and question-answering techni
 
 # Configure AWS clients - prioritize Streamlit secrets over environment variables
 aws_region = st.secrets.AWS_REGION
-aws_access_key = st.secrets.default.AWS_ACCESS_KEY_ID
-aws_secret_key = st.secrets.default.AWS_SECRET_ACCESS_KEY
+aws_access_key = st.secrets.default.aws_access_key_id
+aws_secret_key = st.secrets.default.aws_secret_access_key
 
 # Set up AWS session with credentials from secrets
 boto3.setup_default_session(
