@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables (for local development)
 load_dotenv()
 
 # App title and description
@@ -17,14 +17,24 @@ This application allows you to upload documents (PDF, TXT) for processing with t
 The documents will be analyzed using vector search and question-answering techniques.
 """)
 
-# Configure AWS clients
-boto3.setup_default_session(region_name=os.getenv("AWS_REGION", "us-east-1"))
+# Configure AWS clients - prioritize Streamlit secrets over environment variables
+aws_region = st.secrets.get("AWS_REGION", os.getenv("AWS_REGION", "us-east-1"))
+aws_access_key = st.secrets.get("AWS_ACCESS_KEY_ID", os.getenv("AWS_ACCESS_KEY_ID"))
+aws_secret_key = st.secrets.get("AWS_SECRET_ACCESS_KEY", os.getenv("AWS_SECRET_ACCESS_KEY"))
+
+# Set up AWS session with credentials from secrets
+boto3.setup_default_session(
+    region_name=aws_region,
+    aws_access_key_id=aws_access_key,
+    aws_secret_access_key=aws_secret_key
+)
+
 s3_client = boto3.client('s3')
 step_functions_client = boto3.client('stepfunctions')
 
-# Bucket and Step Function information from environment variables
-S3_BUCKET = os.getenv("S3_BUCKET")
-STEP_FUNCTION_ARN = os.getenv("STEP_FUNCTION_ARN")
+# Bucket and Step Function information from secrets or environment variables
+S3_BUCKET = st.secrets.get("S3_BUCKET", os.getenv("S3_BUCKET"))
+STEP_FUNCTION_ARN = st.secrets.get("STEP_FUNCTION_ARN", os.getenv("STEP_FUNCTION_ARN"))
 
 # Repurpose sidebar for app information and status
 st.sidebar.header("Application Info")
